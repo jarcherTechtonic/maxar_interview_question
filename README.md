@@ -6,7 +6,7 @@ I decided to go with Flask because I've heard good things about it from colleagu
 and the example in its documentation seemed straight forward.
 
 Once I had a basic end point up and functioning I then moved onto solving the problem. 
-I initially looked into geojson objects and briefly read the spec for it. I then stumbled 
+I initially looked up geojson objects and briefly read the spec for it. I then stumbled 
 upon geojson.io which lets you dynamically create geojson objects. I made two triangles
 that overlapped and hardcoded their data into my program. I chose triangles because
 they're the polygon with the least number of points--I typically prefer to solve a 
@@ -27,22 +27,22 @@ the sorted tuples coordinate list, I realize that I'm going to have to check at 
 simultaneously in order to validate whether or not they're overlapping. 
 
 With the way the coordinates are sorted, we'll always be checking the points from left to right. 
-So using the range function to do index logic, I would check the coordinate at the end of the list (the right-most point)
-e.g. [i-1] and the coordinate to the right of the current point e.g. [i+1]. And the basic pseudocode for it was 
-if polygon1's longitude (x values) is less than polygon2's longitude 
-and polygon1's end coordinate is larger than polygon2's longitude
-and polygon1's latitude (y values) is less than polygon2's latitude 
-and polygon1's end coordinate is larger than polygon2's latitude
+So using the range function to do index logic, I would check the coordinates at the end of the list (the right-most point)
+e.g. [i-1] and the coordinate to the right of the current point e.g. [i+1]. The basic pseudocode for it was 
+if polygon1's longitude (x values) are less than polygon2's longitude 
+and polygon1's end coordinate are larger than polygon2's longitude
+and polygon1's latitude (y values) are less than polygon2's latitude 
+and polygon1's end coordinate are larger than polygon2's latitude
 then return true
 
-But then I realized that there was an edge case where one of the polygons could be much smaller than the other, 
-and thus technically able to reside within its x and y coordinate boundaries. Given that, I decided to google the problem 
-and see if there was a library that had already solved this problem for me. 
+But I ultimately realized that there was an edge case where one of the polygons could be much smaller than the other, 
+and thus technically able to reside within its x and y coordinate boundaries without technically overlapping. 
+Given that, I decided to google the problem and see if there was a library that had already solved this problem for me. 
 
 The generous people of stack overflow let me know of a pip package called Shapely that had an intersection method. 
-They also directed me to the pypi documentation for geojson where in I discovered more native methods to help me 
+They also directed me to the pypi documentation for geojson where I discovered more native methods to help me 
 accomplish my goal. Instead of manually pulling out the list of coordinates from the object with dot and bracket notation 
-I used to utils.coords() function which returns the same thing and is twice as easy to read. I then instantiated two Shapely
+I used the utils.coords() function which returns the same thing and is twice as easy to read. I then instantiated two Shapely
 Polygons with the coordinates. Then I simply use the intersect method on them to check if they overlap, return true if 
 there's an overlap, otherwise return false. 
 
