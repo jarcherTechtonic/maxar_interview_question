@@ -54,14 +54,18 @@ polygon5 = {
 }
 
 def polygons_overlap(p1, p2):
-    p1_coordinates = list(geojson.utils.coords(p1))
-    p2_coordinates = list(geojson.utils.coords(p2))
+    if p1.is_valid or p2.is_valid:
+        try:
+            p1_coordinates = list(geojson.utils.coords(p1))
+            p2_coordinates = list(geojson.utils.coords(p2))
 
-    p1_coordinates, p2_coordinates = Polygon(p1_coordinates), Polygon(p2_coordinates)
+            p1_coordinates, p2_coordinates = Polygon(p1_coordinates), Polygon(p2_coordinates)
 
-    if p1_coordinates.intersection(p2_coordinates):
-        return True
-    return False
+            if p1_coordinates.intersection(p2_coordinates):
+                return True
+            return False
+        except ValueError:
+            print("Polygon data format invalid")
 
 import flask
 app = flask.Flask(__name__)
