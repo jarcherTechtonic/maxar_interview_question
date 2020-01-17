@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from shapely.geometry import Polygon
 import geojson
 
@@ -10,20 +10,22 @@ def index():
 
 @app.route('/intersect', methods = ['POST'])
 def intersect():
-    polygon1 = geojson.utils.generate_random("Polygon")
-    polygon2 = geojson.utils.generate_random("Polygon")
+    # polygon1 = geojson.utils.generate_random("Polygon")
+    # polygon2 = geojson.utils.generate_random("Polygon")
+    data = request.get_json()
+    polygon1 = data['coord1'].split(',')
+    polygon2 = data['coord2'].split(',')
+    polygon1 = [int(coord) for coord in polygon1]
+    polygon2 = [int(coord) for coord in polygon2]
+    print(polygon1)
+    try:
+        p1_coordinates, p2_coordinates = polygon1, polygon2
+        p1_coordinates, p2_coordinates = Polygon(p1_coordinates), Polygon(p2_coordinates)
 
-    if polygon1.is_valid or polygon2.is_valid:
-        try:
-            p1_coordinates = list(geojson.utils.coords(polygon1))
-            p2_coordinates = list(geojson.utils.coords(polygon2))
-
-            p1_coordinates, p2_coordinates = Polygon(p1_coordinates), Polygon(p2_coordinates)
-
-            if p1_coordinates.intersection(p2_coordinates):
-                return {"intersect": "True"}
-            return {"intersect": "False"}
-        except ValueError:
-            print("Polygon data format invalid")
+        if p1_coordinates.intersection(p2_coordinates):
+            return {"intersect": "True"}
+        return {"intersect": "False"}
+    except ValueError:
+        print("Polygon data format invalid")
 
 app.run(debug=True)
