@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>geojson polygon overlap</title>
+</head>
+<body>
+    <h1>Enter coordinates for two polygons!</h1>
+<!--    <h4>ex: [(-108, 38),(-105, 38),(-106, 40),(-108, 38)]</h4>-->
+    <form action="/intersect" method="post">
+        <label for="polygon1">Polygon One</label>
+        <input type="text" name="polygon1"/>
+        <label for="polygon2">Polygon Two</label>
+        <input type="text" name="polygon2"/>
+<!--        <button type="submit">test overlap!</button>-->
+        <input type="submit">
+    </form>
+    <div id="response"></div>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $("form").submit(function(event) {
+        p1 = $('form [name="polygon1"').val();
+        p2 = $('form [name="polygon2"').val();
+        try {
+            coordinates = {
+                coord1: p1,
+                coord2: p2
+            }
+            $.ajax({
+                data: JSON.stringify(coordinates),
+                type : 'POST',
+                url : '/intersect',
+                contentType : 'application/json',
+            })
+            .done(function(data){
+                $('#response').text(data);
+            })
+        } catch (err) {
+            $('#response').text('Json request is invalid' + ' ' + err);
+        }
+        event.preventDefault();
+    });
+</script>
+</html>
