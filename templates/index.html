@@ -5,9 +5,43 @@
     <title>geojson polygon overlap</title>
 </head>
 <body>
-    <h1>Enter coordinates for two polygons!</h1>
+    <h1>Instructions:</h1>
+    <ol>
+        <h3>Go to <a href="geojson.io">geojson.io</a> and draw two polygons on the map!</h3>
+        <h3>Then copy and paste the json code it generates into their respective inputs and hit 'submit query'</h3>
+    </ol>
+    <p>
+        ex:
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              -104.62280273437499,
+              39.32579941789298
+            ],
+            [
+              -105.8203125,
+              40.245991504199026
+            ],
+            [
+              -106.842041015625,
+              39.20671884491848
+            ],
+            [
+              -104.62280273437499,
+              39.32579941789298
+            ]
+          ]
+        ]
+      }
+    }
+    </p>
 <!--    <h4>ex: [(-108, 38),(-105, 38),(-106, 40),(-108, 38)]</h4>-->
-    <form action="/intersect" method="post">
+    <form style="display:flex; flex-direction:column; align-items:center" action="/intersect" method="post">
         <label for="polygon1">Polygon One</label>
         <input type="text" name="polygon1"/>
         <label for="polygon2">Polygon Two</label>
@@ -19,27 +53,31 @@
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script type="text/javascript">
-    $("form").submit(function(event) {
-        p1 = $('form [name="polygon1"').val();
-        p2 = $('form [name="polygon2"').val();
-        try {
-            coordinates = {
-                coord1: p1,
-                coord2: p2
-            }
-            $.ajax({
-                data: JSON.stringify(coordinates),
-                type : 'POST',
-                url : '/intersect',
-                contentType : 'application/json',
-            })
-            .done(function(data){
-                $('#response').text(data);
-            })
-        } catch (err) {
-            $('#response').text('Json request is invalid' + ' ' + err);
-        }
-        event.preventDefault();
-    });
+  $("form").submit(function (event) {
+    p1 = $('form [name="polygon1"').val();
+    p2 = $('form [name="polygon2"').val();
+    if (!JSON.parse(p1) || !JSON.parse(p2)) {
+      p1 = p1.replace(/\s/g, '')
+      p2 = p2.replace(/\s/g, '')
+    }
+    try {
+      coordinates = {
+        coord1: JSON.parse(p1),
+        coord2: JSON.parse(p2)
+      }
+      $.ajax({
+        data: JSON.stringify(coordinates),
+        type: 'POST',
+        url: '/intersect',
+        contentType: 'application/json',
+      })
+        .done(function (data) {
+          $('#response').text(data);
+        })
+    } catch (err) {
+      $('#response').text('Json request is invalid' + err);
+    }
+    event.preventDefault();
+  });
 </script>
 </html>

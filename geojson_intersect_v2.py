@@ -10,22 +10,21 @@ def index():
 
 @app.route('/intersect', methods = ['POST'])
 def intersect():
-    # polygon1 = geojson.utils.generate_random("Polygon")
-    # polygon2 = geojson.utils.generate_random("Polygon")
-    data = request.get_json()
-    polygon1 = data['coord1'].split(',')
-    polygon2 = data['coord2'].split(',')
-    polygon1 = [int(coord) for coord in polygon1]
-    polygon2 = [int(coord) for coord in polygon2]
-    print(polygon1)
     try:
-        p1_coordinates, p2_coordinates = polygon1, polygon2
-        p1_coordinates, p2_coordinates = Polygon(p1_coordinates), Polygon(p2_coordinates)
+        data = request.get_json()
+        data = data.values()
+        polygons = []
+        for item in data:
+            coordinates = item['geometry']['coordinates']
+            polygons.append(list(geojson.coords(coordinates[0])))
+        polygons = [Polygon(polygon) for polygon in polygons]
+        for p in range(len(polygons)):
+            if polygons[0].intersection(polygons[1]):
+                return 'These polygons Intersect'
+        else:
+            return 'These polygons don\'t intersect'
+    except:
+        return 'Please enter valid geoJSON Object'
 
-        if p1_coordinates.intersection(p2_coordinates):
-            return {"intersect": "True"}
-        return {"intersect": "False"}
-    except ValueError:
-        print("Polygon data format invalid")
 
 app.run(debug=True)
