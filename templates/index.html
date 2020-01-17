@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>geojson polygon overlap</title>
 </head>
-<body>
+<body style="display:flex; flex-direction:column; align-items:center">
     <h1>Instructions:</h1>
     <ol>
         <h3>Go to <a href="geojson.io">geojson.io</a> and draw two polygons on the map!</h3>
@@ -40,13 +40,11 @@
       }
     }
     </p>
-<!--    <h4>ex: [(-108, 38),(-105, 38),(-106, 40),(-108, 38)]</h4>-->
-    <form style="display:flex; flex-direction:column; align-items:center" action="/intersect" method="post">
+    <form action="/intersect" method="post">
         <label for="polygon1">Polygon One</label>
         <input type="text" name="polygon1"/>
         <label for="polygon2">Polygon Two</label>
         <input type="text" name="polygon2"/>
-<!--        <button type="submit">test overlap!</button>-->
         <input type="submit">
     </form>
     <div id="response"></div>
